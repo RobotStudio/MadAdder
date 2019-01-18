@@ -2,6 +2,20 @@ resource "aws_sns_topic" "cron" {
   name = "sns-cron-topic"
 }
 
+resource "aws_sns_topic_subscription" "cron_topic" {
+  topic_arn = "${aws_sns_topic.cron.arn}"
+  protocol  = "lambda"
+  endpoint  = "${aws_lambda_function.interval.arn}"
+}
+
+resource "aws_lambda_permission" "interval_to_sns" {
+    statement_id = "AllowExecutionFromSNS"
+    action = "lambda:InvokeFunction"
+    function_name = "${aws_lambda_function.lambda.arn}"
+    principal = "sns.amazonaws.com"
+    source_arn = "${aws_sns_topic.topic.arn}"
+}
+
 resource "aws_sns_topic_policy" "cron" {
   arn = "${aws_sns_topic.cron.arn}"
 
