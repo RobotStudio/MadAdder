@@ -8,6 +8,8 @@ minute_intervals = {
 }
 
 second_intervals = {
+  # Note: If not divisible by 60, then every minute will see timing errors.
+  # Luckily, 60 is divisible by most numbers less than 60 and all less than 11.
   "every_twenty_seconds" = "rate(20 seconds)"
   "every_five_seconds" = "rate(5 seconds)"
   "every_three_seconds" = "rate(3 seconds)"
