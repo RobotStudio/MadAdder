@@ -20,9 +20,3 @@ resource "aws_cloudwatch_event_rule" "{{app_name}}_seconds_notifier" {
   schedule_expression = "rate(1 minute)"
   depends_on = ["aws_lambda_function.{{app_name}}_seconds_notifier"]
 }
-
-resource "aws_cloudwatch_event_target" "seconds_notifier_sns" {
-  rule      = "${aws_cloudwatch_event_rule.{{app_name}}_seconds_notifier.name}"
-  target_id = "SendToSNS"
-  arn       = "${aws_sns_topic.{{app_name}}.arn}"
-}

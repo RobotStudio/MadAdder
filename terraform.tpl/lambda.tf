@@ -7,14 +7,15 @@ data "archive_file" "{{app_name}}_function" {
 resource "aws_lambda_function" "{{app_name}}_seconds_notifier" {
   function_name = "{{app_name}}_seconds_notifier"
   handler = "app.handler"
-  runtime = "python3.6"
+  runtime = "python3.7"
+  timeout = "60"
   filename = "function.zip"
   #source_code_hash = "${base64sha256(file("function.zip"))}"
   role = "${aws_iam_role.{{app_name}}_lambda_exec_role.arn}"
 }
 
 resource "aws_cloudwatch_event_target" "{{app_name}}_lambda" {
-  target_id = "{{app_name}}_lambda"
+  target_id = "{{app_name}}_seconds_notifier"
   rule = "${aws_cloudwatch_event_rule.{{app_name}}_seconds_notifier.name}"
   arn = "${aws_lambda_function.{{app_name}}_seconds_notifier.arn}"
 }
