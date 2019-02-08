@@ -6,7 +6,6 @@ import re
 import time
 import json
 import threading
-import logging
 
 import boto3
 
@@ -15,7 +14,6 @@ sns = boto3.client('sns')
 
 
 def set_interval(rate):
-    logging.error(f"RATE: {rate}")
     seconds = re.search('rate\((\d+) seconds*\)', rate).group(1)
 
     def decorator(function):

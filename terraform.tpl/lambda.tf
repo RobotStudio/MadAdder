@@ -8,7 +8,7 @@ resource "aws_lambda_function" "{{app_name}}_seconds_notifier" {
   function_name = "{{app_name}}_seconds_notifier"
   handler = "app.handler"
   runtime = "python3.7"
-  timeout = "60"
+  timeout = "65"
   filename = "function.zip"
   #source_code_hash = "${base64sha256(file("function.zip"))}"
   role = "${aws_iam_role.{{app_name}}_lambda_exec_role.arn}"
