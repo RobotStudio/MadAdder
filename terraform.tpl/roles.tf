@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-resource "aws_iam_role" "{{name}}_lambda_exec_role" {
-	name = "{{name}}_lambda_exec_role"
+resource "aws_iam_role" "{{app_name}}_lambda_exec_role" {
+	name = "{{app_name}}_lambda_exec_role"
 	assume_role_policy = <<EOF
 {
 	"Version": "2012-10-17",
@@ -19,8 +19,8 @@ resource "aws_iam_role" "{{name}}_lambda_exec_role" {
 EOF
 }
 
-resource "aws_iam_policy" "{{name}}_lambda_policy" {
-  name = "{{name}}_lambda_policy"
+resource "aws_iam_policy" "{{app_name}}_lambda_policy" {
+  name = "{{app_name}}_lambda_policy"
   description = "IAM list roles, SNS publish, SQS pop, logs, S3, and kinesis"
   policy = <<EOF
 {
@@ -105,7 +105,7 @@ resource "aws_iam_policy" "{{name}}_lambda_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "{{name}}_lambda_attachment" {
-  role       = "${aws_iam_role.{{name}}_lambda_exec_role.name}"
-  policy_arn = "${aws_iam_policy.{{name}}_lambda_policy.arn}"
+resource "aws_iam_role_policy_attachment" "{{app_name}}_lambda_attachment" {
+  role       = "${aws_iam_role.{{app_name}}_lambda_exec_role.name}"
+  policy_arn = "${aws_iam_policy.{{app_name}}_lambda_policy.arn}"
 }
