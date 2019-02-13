@@ -8,12 +8,14 @@ resource "aws_sns_topic_policy" "{{app_name}}" {
 }
 
 data "aws_iam_policy_document" "sns_{{app_name}}" {
+  policy_id = "Policy1550029269136"
   statement {
-    effect = "Allow",
-    actions = ["SNS:Publish"]
+    sid = "Stmt1550029261725"
+    effect = "Allow"
+    actions = ["sns:Publish"]
 
     principals {
-      type = "Service"
+      type = "AWS"
       identifiers = ["*"]
     }
 
@@ -22,13 +24,24 @@ data "aws_iam_policy_document" "sns_{{app_name}}" {
       variable = "aws:SourceArn"
 
       values = [
-        "${aws_lambda_function.{{app_name}}_seconds_notifier.arn}",
-        {% for interval, rate in minute_intervals.items() %}
-        "${aws_cloudwatch_event_target.{{interval}}_sns}",{% endfor %}
+        "${aws_lambda_function.{{app_name}}_seconds_notifier.arn}",{% for interval, rate in minute_intervals.items() %}
+        "${aws_cloudwatch_event_target.{{interval}}_sns.arn}",{% endfor %}
       ]
     }
 
     resources = ["${aws_sns_topic.{{app_name}}.arn}"]
+  }
+
+  statement {
+    sid = "Stmt1550029496021"
+    effect = "Allow",
+    actions = ["sns:Subscribe"]
+    resources = ["${aws_sns_topic.{{app_name}}.arn}"]
+
+    principals {
+      type = "AWS"
+      identifiers = ["*"]
+    }
   }
 }
 
