@@ -13,25 +13,6 @@ import boto3
 sns = boto3.client('sns')
 
 
-def set_interval(rate):
-    seconds = re.search('rate\((\d+) seconds*\)', rate).group(1)
-
-    def decorator(function):
-        def wrapper(*args, **kwargs):
-            stopped = threading.Event()
-
-            def loop():  # executed in another thread
-                while not stopped.wait(seconds):  # until stopped
-                    function(*args, **kwargs)
-
-            thread = threading.Thread(target=loop)
-            thread.daemon = True  # stop if the program exits
-            thread.start()
-            return stopped
-        return wrapper
-    return decorator
-
-
 def send_message(interval, rate):
     return sns.publish(
         TopicArn='{{topic_arn}}',
@@ -55,10 +36,25 @@ def send_message(interval, rate):
     )
 
 {% for interval, rate in second_intervals.items() %}
-@set_interval("{{rate}}")
-def {{interval}}(*args, **kwargs):
-    send_message("""{{interval}}""", """{{rate}}""")
+def {{interval}}():
+    rate = """{{rate}}"""
+    interval = """{{interval}}"""
+    seconds = float(re.search(r'rate\((\d+) seconds*\)', rate).group(1))
+    count = 60/seconds
+
+    while count > 0:
+        send_message(interval, rate)
+        count -= 1
+        time.sleep(seconds)
 
 {% endfor %}
 def handler(event, context):
-    time.sleep(59)
+    intervals_funcs = [{% for interval, rate in second_intervals.items() %}
+        threading.Thread(target={{interval}}),{% endfor %}
+    ]
+
+    for thread in intervals_funcs:
+        thread.start()
+
+    for thread in intervals_funcs:
+        thread.join()

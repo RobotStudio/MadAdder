@@ -21,4 +21,4 @@ app_name = "cron"
 
 # Run shadow fax on terraform.tpl, then terraform apply the generated directory, and
 # populate this based on the output.
-topic_arn = ""
+topic_arn = "arn:aws:sns:us-east-1:840510123196:cron"
