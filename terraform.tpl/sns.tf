@@ -23,10 +23,10 @@ data "aws_iam_policy_document" "sns_{{app_name}}" {
       test = "ArnEquals"
       variable = "aws:SourceArn"
 
-      values = ["*"]
-#        "${aws_lambda_function.{{app_name}}_seconds_notifier.arn}",{% for interval, rate in minute_intervals.items() %}
-#        "${aws_cloudwatch_event_target.{{interval}}_sns.arn}",{% endfor %}
-#      ]
+      values = [
+        "${aws_lambda_function.{{app_name}}_seconds_notifier.arn}",{% for interval, rate in minute_intervals.items() %}
+        "${aws_cloudwatch_event_target.{{interval}}_sns.arn}",{% endfor %}
+      ]
     }
 
     resources = ["${aws_sns_topic.{{app_name}}.arn}"]
