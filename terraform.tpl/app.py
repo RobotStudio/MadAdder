@@ -15,7 +15,7 @@ sns = boto3.client('sns')
 
 def send_message(interval, rate):
     return sns.publish(
-        TopicArn='{{topic_arn}}',
+        TopicArn=f"{{topic_arn}}_{interval}",
         Message=json.dumps({
             "default": f"{interval}: {rate}",
         }),

@@ -9,7 +9,7 @@ resource "aws_cloudwatch_event_rule" "{{interval}}" {
 resource "aws_cloudwatch_event_target" "{{interval}}_sns" {
   rule      = "${aws_cloudwatch_event_rule.{{interval}}.name}"
   target_id = "SendToSNS"
-  arn       = "${aws_sns_topic.{{app_name}}.arn}"
+  arn       = "${aws_sns_topic.{{app_name}}_{{interval}}.arn}"
 }
 {% endfor %}
 
